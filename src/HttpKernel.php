@@ -11,9 +11,8 @@ class HttpKernel extends AbstractKernel
         $result = $this->routeBuilder->resolve($request);
     
         if (!$result->status) {
-            $this->response->status(200);
+            $this->response->code(404)->send();
             $this->terminate();
-            $this->response->send();
         }
     
         if ($this->extensionCollector->extensionsIsExists()) {
@@ -30,6 +29,6 @@ class HttpKernel extends AbstractKernel
     
     public function terminate()
     {
-        // Terminated applications
+        // Terminate applications
     }
 }
