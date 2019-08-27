@@ -45,12 +45,12 @@ class App
     
     public static function await(string $timeout) : void
     {
-        static::$kernel->await('await', null, $timeout);
+        static::$kernel->await($timeout);
     }
     
     public static function fail(string $timeout) : void
     {
-        static::$kernel->fail('fail', null, $timeout);
+        static::$kernel->fail($timeout);
     }
     
     public static function getContainer() : Container
