@@ -8,7 +8,13 @@ class HttpKernel extends AbstractKernel
 {
     public function handle(Request $request) : Response
     {
-        $this->routeBuilder->resolve($request);
+        $result = $this->routeBuilder->resolve($request);
+    
+        if (!$result->status) {
+            $this->response->status(200);
+            $this->terminate();
+            $this->response->send();
+        }
     
         if ($this->extensionCollector->extensionsIsExists()) {
             $extensions = $this->extensionCollector->getExtensions();
@@ -20,5 +26,10 @@ class HttpKernel extends AbstractKernel
         $this->bus->run($request);
         
         return $this->response();
+    }
+    
+    public function terminate()
+    {
+        // Terminated applications
     }
 }

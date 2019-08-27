@@ -6,6 +6,7 @@ namespace Marussia\ApplicationKernel;
 
 use Marussia\Request\Request;
 use Marussia\Router\Router;
+use Marussia\Router\Result;
 use Marussia\ApplicationKernel\Config;
 
 class RequestBundle
@@ -14,15 +15,15 @@ class RequestBundle
     
     private $router;
     
-    private $config;
+    private $response;
 
-    public function __construct(Router $router, Config $config)
+    public function __construct(Router $router, Response $response)
     {
         $this->router = $router;
-        $this->config = $config;
+        $this->response = $response;
     }
     
-    public function resolve(Request $request)
+    public function resolve(Request $request) : Result
     {
         $this->request = $request;
         
@@ -36,8 +37,11 @@ class RequestBundle
         
         $result = $this->router->startRouting();
         
-        $request->setAttributes($result->attributes);
-        $request->setHandler($result->handler);
-        $request->setAction($result->action);
+        if ($result->status) {
+            $request->setAttributes($result->attributes);
+            $request->setHandler($result->handler);
+            $request->setAction($result->action);
+        }
+        return $result;
     }
 } 
