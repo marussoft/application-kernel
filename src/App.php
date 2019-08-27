@@ -40,7 +40,7 @@ class App
     
     public static function done($data = null) : void
     {
-        static::$kernel->done('done', $data);
+        static::$kernel->done($data);
     }
     
     public static function await(string $timeout) : void
