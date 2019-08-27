@@ -9,7 +9,7 @@ use Marussia\EventBus\Result;
 use Marussia\Request\Request;
 use Marussia\ApplicationKernel\Config;
 
-class EventBusBundle
+class EventBus
 {
     private $bus;
     
