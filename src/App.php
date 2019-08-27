@@ -18,13 +18,15 @@ class App
             throw new ApplicationHasBeenStartedException();
         }
         
+        $container = new Container();
+        
         if (!$config->isReady()) {
             throw new KernelConfigIsNotInitializedException();
         }
         
-        $container = new Container();
+        $container->set(Config::class, $config);
         
-        static::$kernel = new HttpKernel(new ExtensionCollector($config));
+        static::$kernel = $container->instance(HttpKernel::class);
         
         // Возвращаем ядро
         return static::$kernel;
@@ -48,5 +50,10 @@ class App
     public static function fail(string $timeout) : void
     {
         static::$kernel->fail('fail', null, $timeout);
+    }
+    
+    public static function getContainer() : Container
+    {
+        return new Container();
     }
 }

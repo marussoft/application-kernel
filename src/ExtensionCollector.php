@@ -11,15 +11,9 @@ class ExtensionCollector extends Container
 {
     private $extensionsBinds = [];
 
-    public function __construct(Config $config)
+    public function __construct()
     {
-        if (!$config->isReady()) {
-            throw new KernelConfigIsNotInitializedException();
-        }
-    
-        $this->set(Config::class, $config);
-        
-        $this->extensionBinds = $config->getAll('kernel.extensions');
+        $this->extensionBinds = Config::get('kernel.extensions');
     }
 
     public function getExtensions() : array
