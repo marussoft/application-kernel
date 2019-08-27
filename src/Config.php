@@ -51,7 +51,7 @@ class Config
         $configArray = static::$instance->getAll($configFile);
         
         if (!array_key_exists($configName, $configArray)) {
-            throw ConfigIsNotFoundException($configName, $configFile);
+            throw new ConfigIsNotFoundException($configName, $configFile);
         }
         return $configArray[$configName];
     }

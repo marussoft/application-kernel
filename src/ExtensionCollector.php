@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Marussia\ApplicationKernel;
 
 use Marussia\DependencyInjection\Container;
-use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
 class ExtensionCollector extends Container
 {

@@ -6,6 +6,7 @@ namespace Marussia\ApplicationKernel;
 
 use Marussia\DependencyInjection\Container;
 use Marussia\ApplicationKernel\Exceptions\ApplicationHasBeenStartedException;
+use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
 class App
 {
