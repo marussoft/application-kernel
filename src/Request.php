@@ -10,9 +10,9 @@ use Marussia\ApplicationKernel\Exceptions\ActionAlreadyInitializedException;
 
 class Request extends RawRequest
 {
-    private $handler;
+    private $handler = '';
     
-    private $action;
+    private $action = '';
 
     public function setHandler(string $handler) : void
     {

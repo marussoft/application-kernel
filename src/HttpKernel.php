@@ -6,14 +6,11 @@ namespace Marussia\ApplicationKernel;
 
 class HttpKernel extends AbstractKernel
 {
+    private $request;
+
     public function handle(Request $request) : Response
     {
-        $result = $this->routeBuilder->resolve($request);
-    
-        if (!$result->status) {
-            $this->response->code(404)->send();
-            $this->terminate();
-        }
+        $this->routeBuilder->resolve($request);
     
         if ($this->extensionCollector->extensionsIsExists()) {
             $extensions = $this->extensionCollector->getExtensions();
@@ -25,10 +22,5 @@ class HttpKernel extends AbstractKernel
         $this->bus->run($request);
         
         return $this->response();
-    }
-    
-    public function terminate()
-    {
-        // Terminate applications
     }
 }

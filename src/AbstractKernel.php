@@ -43,4 +43,9 @@ abstract class AbstractKernel
     {
         return $this->bus->result('fail', null, $timeout);
     }
+    
+    public function terminate(Request $request, Response $response)
+    {
+        $this->bus->terminate($request, $response);
+    }
 }

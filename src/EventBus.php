@@ -6,7 +6,6 @@ namespace Marussia\ApplicationKernel;
 
 use Marussia\EventBus\Bus;
 use Marussia\EventBus\Result;
-use Marussia\Request\Request;
 use Marussia\ApplicationKernel\Config;
 
 class EventBus
@@ -19,7 +18,8 @@ class EventBus
         $this->bus->setMembersDirPath(Config::get('kernel.bus', 'members_dir_path'));
         $this->bus->setFiltersBinds(Config::get('kernel.bus', 'filters_binds'));
         $this->bus->setLayers(Config::get('kernel.bus', 'layers'));
-        $this->bus->setStartedTask(Config::get('kernel.bus', 'started_task'));
+        $this->bus->setStartingTask(Config::get('kernel.bus', 'starting_task'));
+        $this->bus->setTerminatingTask(Config::get('kernel.bus', 'terminating_task'));
         $this->bus->init();
     }
     
@@ -31,5 +31,10 @@ class EventBus
     public function result(string $status, $data = null, string $timeout = '') : Result
     {
         return Result::create($status, $data, $timeout);
+    }
+    
+    public function terminate(Request $request, Response $response)
+    {
+        $this->bus->terminate(compact('request', 'response'));
     }
 }
