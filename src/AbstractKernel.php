@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
+use Marussia\EventBus\Result;
+
 abstract class AbstractKernel
 {
     protected $extensionCollector;
@@ -27,18 +29,18 @@ abstract class AbstractKernel
         $this->response->view($data);
     }
     
-    public function done($data = null) : void
+    public function done($data = null) : Result
     {
-        $this->bus->result('done', $data);
+        return $this->bus->result('done', $data);
     }
     
-    public function await(string $timeout) : void
+    public function await(string $timeout) : Result
     {
-        $this->bus->result('await', null, $timeout);
+        return $this->bus->result('await', null, $timeout);
     }
     
-    public function fail(string $timeout) : void
+    public function fail(string $timeout) : Result
     {
-        $this->bus->result('fail', null, $timeout);
+        return $this->bus->result('fail', null, $timeout);
     }
 }

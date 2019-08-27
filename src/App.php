@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marussia\ApplicationKernel;
 
 use Marussia\DependencyInjection\Container;
+use Marussia\EventBus\Result;
 use Marussia\ApplicationKernel\Exceptions\ApplicationHasBeenStartedException;
 use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
@@ -38,19 +39,19 @@ class App
         static::$kernel->view($data);
     }
     
-    public static function done($data = null) : void
+    public static function done($data = null) : Result
     {
-        static::$kernel->done($data);
+        return static::$kernel->done($data);
     }
     
-    public static function await(string $timeout) : void
+    public static function await(string $timeout) : Result
     {
-        static::$kernel->await($timeout);
+        return static::$kernel->await($timeout);
     }
     
-    public static function fail(string $timeout) : void
+    public static function fail(string $timeout) : Result
     {
-        static::$kernel->fail($timeout);
+        return static::$kernel->fail($timeout);
     }
     
     public static function getContainer() : Container
