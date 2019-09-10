@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marussia\ApplicationKernel;
 
 use Marussia\EventBus\Result;
+use Marussia\Template\Template;
 
 abstract class AbstractKernel
 {
@@ -16,17 +17,34 @@ abstract class AbstractKernel
     
     protected $response;
     
-    public function __construct(ExtensionCollector $extensionCollector, RouteBuilder $routeBuilder, EventBus $bus, Response $response)
+    protected $handler;
+    
+    protected $template;
+    
+    protected $view;
+    
+    public function __construct(
+        ExtensionCollector $extensionCollector, 
+        RouteBuilder $routeBuilder, 
+        RequestHandler $handler, 
+        Response $response,
+        Template $template
+    )
     {
         $this->extensionCollector = $extensionCollector;
         $this->routeBuilder = $routeBuilder;
-        $this->bus = $bus;
+        $this->handler = $handler;
         $this->response = $response;
+        $this->template = $template;
     }
     
-    public function view(array $data)
+    public function view(string $view, array $data)
     {
-        $this->response->view($data);
+        $this->template->content($data);
+        
+        $viewFile = str_replace('.', '/', $view);
+        
+        $this->view($viewFile);
     }
     
     public function done($data = null) : Result

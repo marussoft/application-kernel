@@ -19,7 +19,9 @@ class HttpKernel extends AbstractKernel
             }
         }
     
-        $this->bus->run($request);
+        $this->handler->run($request);
+        
+        $this->response->prepare($this->view);
         
         return $this->response();
     }

@@ -34,9 +34,9 @@ class App
         return static::$kernel;
     }
     
-    public static function view(array $data) : void
+    public static function view(string $view, array $data) : void
     {
-        static::$kernel->view($data);
+        static::$kernel->view($view, $data);
     }
     
     public static function done($data = null) : Result

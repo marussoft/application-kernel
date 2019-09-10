@@ -46,6 +46,12 @@ class Config
         return $this->configures[$configName];
     }
     
+    public function getHandler(string $handler) : string
+    {
+        $handlers = $this->getAll('handlers');
+        return $handlers[$handler];
+    }
+    
     public static function get(string $configFile, string $configName)
     {
         $configArray = static::$instance->getAll($configFile);
