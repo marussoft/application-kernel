@@ -1,1 +1,1 @@
-# application-kernel
+# Application kernel component

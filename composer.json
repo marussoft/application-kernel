@@ -1,0 +1,32 @@
+{
+    "name": "marussia/application-kernel",
+    "type": "library",
+    "description": "Marussia application kernel",
+    "license": "MIT",
+    "keywords": [
+        "application-kernel"
+    ],
+    "authors": [
+        {
+            "name": "Mikhail Ilinsky",
+            "email": "mail@milinsky.ru"
+        }
+    ],
+    "support": {
+        "docs": "https://docs.marussia.org/application-kernel/"
+    },
+    "require": {
+        "php": "^7.0",
+        "marussia/dependency-injection": "~1.0",
+        "marussia/request": "~1.0",
+        "marussia/router": "~1.0",
+        "marussia/response": "~1.0",
+        "marussia/template": "~1.0",
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Marussia\\ApplicationKernel\\": "src/"
+        }
+    }
+}
