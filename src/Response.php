@@ -10,14 +10,30 @@ use Marussia\Template\Template;
 class Response extends RawResponse
 {
     private $template;
+    
+    private $view;
 
-    public function __construct(Template $template)
+    public function __construct()
     {
-        $this->template = $template;
+        $this->template = new Template(Config::get('kernel.template', 'path_to_view'));
     }
     
     public function prepare(string $view)
     {
-        $this->content($this->template->render($view));
+        if (!empty($this->view)) {
+            $this->content($this->template->render($this->view));
+        }
+    }
+    
+    public function setView(string $view)
+    {
+        if (empty($this->view)) {
+            $this->view = str_replace('.', '/', $view);
+        }
+    }
+    
+    public function setContent(array $content)
+    {
+        $this->template->content($content);
     }
 }

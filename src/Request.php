@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_type=1);
+declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
@@ -13,7 +13,7 @@ class Request extends RawRequest
     private $handler = '';
     
     private $action = '';
-
+    
     public function setHandler(string $handler) : void
     {
         if (!empty($this->handler)) {

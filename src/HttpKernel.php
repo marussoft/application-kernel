@@ -20,9 +20,9 @@ class HttpKernel extends AbstractKernel
         }
     
         $this->handler->run($request);
-        
+
         $this->response->prepare($this->view);
         
-        return $this->response();
+        return $this->response;
     }
 }
