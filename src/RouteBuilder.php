@@ -8,17 +8,16 @@ use Marussia\Request\Request;
 use Marussia\Router\Router;
 use Marussia\ApplicationKernel\Config;
 
-class RequestBundle
+class RouteBuilder
 {
     private $request;
     
     private $router;
     
     private $response;
-
-    public function __construct(Router $router, Response $response)
+    
+    public function __construct(Response $response)
     {
-        $this->router = $router;
         $this->response = $response;
     }
     
@@ -35,11 +34,14 @@ class RequestBundle
         $this->router->setRoutesDirPath(Config::get('kernel.router', 'routes_dir_path'));
         
         $result = $this->router->startRouting();
-        
+
         if ($result->status) {
             $request->setAttributes($result->attributes);
             $request->setHandler($result->handler);
             $request->setAction($result->action);
+        } else {
+            $this->response->code(404);
         }
+        
     }
 } 

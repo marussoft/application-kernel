@@ -10,15 +10,12 @@ class RequestHandler extends Container
 {
     private $config;
 
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
     public function run(Request $request)
     {
-        $handler = $this->instance($this->config->getHandlers($request->getHandler()));
-        
-        call_user_func_array([$handler, $request->getAction()], [$request]);
+        $handlerClass = Config::get('handlers.' . strtolower($request->getHandler()), $request->getAction());
+        if (!empty($handlerClass)) {
+            $handler = $this->instance($handlerClass);
+            call_user_func_array([$handler, 'run'], [$request]);
+        }
     }
 }
