@@ -50,4 +50,9 @@ abstract class AbstractKernel
     {
         $this->hook->run();
     }
+    
+    public function getResponse() : Response
+    {
+        return $this->response;
+    }
 }

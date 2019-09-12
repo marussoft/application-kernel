@@ -44,6 +44,11 @@ class App
         static::$kernel->addHook($hook);
     }
     
+    public static function response() : Response
+    {
+        return static::$kernel->getResponse();
+    }
+    
     public static function getContainer() : Container
     {
         return new Container();
