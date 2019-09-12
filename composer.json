@@ -21,6 +21,7 @@
         "marussia/request": "~1.0",
         "marussia/router": "~1.0",
         "marussia/response": "~1.0",
+        "marussia/hook": "^1.0",
         "marussia/template": "~1.0"
     },
     "minimum-stability": "dev",
