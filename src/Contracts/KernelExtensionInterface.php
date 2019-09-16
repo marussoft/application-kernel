@@ -1,6 +1,6 @@
 <?php
 
-namespace Marussia\ApplicationKernel;
+namespace Marussia\ApplicationKernel\Contracts;
 
 use Marussia\ApplicationKernel\Request;
 

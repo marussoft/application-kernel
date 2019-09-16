@@ -32,6 +32,7 @@ class RouteBuilder
             $this->request->isSecure() ? 'https' : 'http'
         );
         $this->router->setRoutesDirPath(Config::get('kernel.router', 'routes_dir_path'));
+        $this->router->setLanguages(Config::get('kernel.router', 'languages'));
         
         $result = $this->router->startRouting();
 
@@ -39,6 +40,7 @@ class RouteBuilder
             $request->setAttributes($result->attributes);
             $request->setHandler($result->handler);
             $request->setAction($result->action);
+            $request->attributes()->set('locale', $result->language);
         } else {
             $this->response->code(404);
         }
