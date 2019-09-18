@@ -26,7 +26,7 @@ class App
             throw new KernelConfigIsNotInitializedException();
         }
         
-        $container->set(Config::class, $config);
+        $container->set($config);
         
         static::$kernel = $container->instance(HttpKernel::class);
         
@@ -34,24 +34,19 @@ class App
         return static::$kernel;
     }
     
-    public static function view(array $data) : void
+    public static function view(string $view, array $data = []) : void
     {
-        static::$kernel->view($data);
+        static::$kernel->view($view, $data);
     }
     
-    public static function done($data = null) : Result
+    public static function hook($hook) : void
     {
-        return static::$kernel->done($data);
+        static::$kernel->addHook($hook);
     }
     
-    public static function await(string $timeout) : Result
+    public static function response() : Response
     {
-        return static::$kernel->await($timeout);
-    }
-    
-    public static function fail(string $timeout) : Result
-    {
-        return static::$kernel->fail($timeout);
+        return static::$kernel->getResponse();
     }
     
     public static function getContainer() : Container

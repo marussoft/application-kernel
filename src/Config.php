@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
-use Marussia\ApplicationKernel\Exceptions\ConfigIsNotFoundException;
-use Marussia\ApplicationKernel\Exceptions\ConfigFileIsNotFoundException;
-
 class Config
 {
     private static $instance;
@@ -32,28 +29,32 @@ class Config
     
     public function getAll(string $configName) : array
     {
-        if (array_key_exists($this->configures[$configName])) {
+        if (array_key_exists($configName, $this->configures)) {
             return $this->configures[$configName];
         }
     
         $configPath = $this->configDir . '/' . str_replace('.', '/', $configName) . '.php';
         
-        if (!is_file($configPath)) {
-            throw new ConfigFileIsNotFoundException($configName);
+        if (is_file($configPath)) {
+            $this->configures[$configName] = include $configPath;
+            return $this->configures[$configName];
         }
-        
-        $this->configures[$configName] = include $configPath;
-        return $this->configures[$configName];
+        return [];
+    }
+    
+    public function getHandler(string $handler) : string
+    {
+        $handlers = $this->getAll('handlers');
+        return $handlers[$handler];
     }
     
     public static function get(string $configFile, string $configName)
     {
         $configArray = static::$instance->getAll($configFile);
         
-        if (!array_key_exists($configName, $configArray)) {
-            throw new ConfigIsNotFoundException($configName, $configFile);
+        if (array_key_exists($configName, $configArray)) {
+            return $configArray[$configName];
         }
-        return $configArray[$configName];
     }
     
     public function isReady() : bool

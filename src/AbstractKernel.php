@@ -4,43 +4,55 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
-use Marussia\EventBus\Result;
-
 abstract class AbstractKernel
 {
     protected $extensionCollector;
     
     protected $routeBuilder;
     
-    protected $bus;
-    
     protected $response;
     
-    public function __construct(ExtensionCollector $extensionCollector, RouteBuilder $routeBuilder, EventBus $bus, Response $response)
+    protected $handler;
+    
+    protected $template;
+    
+    protected $view = '';
+    
+    protected $hook;
+    
+    public function __construct(
+        ExtensionCollector $extensionCollector, 
+        RouteBuilder $routeBuilder, 
+        RequestHandler $handler, 
+        Response $response,
+        HookHandler $hook
+    )
     {
         $this->extensionCollector = $extensionCollector;
         $this->routeBuilder = $routeBuilder;
-        $this->bus = $bus;
+        $this->handler = $handler;
         $this->response = $response;
+        $this->hook = $hook;
     }
     
-    public function view(array $data)
+    public function view(string $view, array $data = [])
     {
-        $this->response->view($data);
+        $this->response->setContent($data);
+        $this->response->setView($view);
     }
     
-    public function done($data = null) : Result
+    public function addHook($hook) : void
     {
-        return $this->bus->result('done', $data);
+        $this->hook->add($hook);
     }
     
-    public function await(string $timeout) : Result
+    public function terminate()
     {
-        return $this->bus->result('await', null, $timeout);
+        $this->hook->run();
     }
     
-    public function fail(string $timeout) : Result
+    public function getResponse() : Response
     {
-        return $this->bus->result('fail', null, $timeout);
+        return $this->response;
     }
 }

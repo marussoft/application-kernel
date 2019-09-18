@@ -12,17 +12,15 @@ class ExtensionCollector extends Container
 
     public function __construct()
     {
-        $this->extensionBinds = Config::get('kernel.extensions');
+        $this->extensionsBinds = Config::get('kernel.extensions', 'extensions');
     }
 
     public function getExtensions() : array
     {
         $extensions = [];
-    
-        foreach($this->extensionsBinds as $extensionName => $class) {
-            $extensions[$extensionName] = $this->instance($class);
+        foreach($this->extensionsBinds as $extensionName => $className) {
+            $extensions[$extensionName] = $this->instance($className);
         }
-        
         return $extensions;
     }
     

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_type=1);
+declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
@@ -10,10 +10,10 @@ use Marussia\ApplicationKernel\Exceptions\ActionAlreadyInitializedException;
 
 class Request extends RawRequest
 {
-    private $handler;
+    private $handler = '';
     
-    private $action;
-
+    private $action = '';
+    
     public function setHandler(string $handler) : void
     {
         if (!empty($this->handler)) {
