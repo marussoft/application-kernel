@@ -14,6 +14,8 @@ class Request extends RawRequest
     
     private $action = '';
     
+    private $valid = true;
+    
     public function setHandler(string $handler) : void
     {
         if (!empty($this->handler)) {
@@ -38,5 +40,15 @@ class Request extends RawRequest
     public function getAction() : string
     {
         return $this->action;
+    }
+    
+    public function setValid(bool $valid) : void
+    {
+        $this->valid = $valid;
+    }
+    
+    public function isValid()
+    {
+        return $this->valid;
     }
 }
