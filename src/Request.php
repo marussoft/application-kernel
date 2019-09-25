@@ -47,7 +47,7 @@ class Request extends RawRequest
         $this->valid = $valid;
     }
     
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->valid;
     }
