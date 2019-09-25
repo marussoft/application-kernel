@@ -36,4 +36,10 @@ class Response extends RawResponse
     {
         $this->template->content($content);
     }
+    
+    public function json($data = null)
+    {
+        $this->content(json_encode($data, JSON_UNESCAPED_UNICODE));
+        $this->header('Content-type: application/json; charset=utf-8');
+    }
 }
