@@ -11,12 +11,12 @@ use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
 class App
 {
-    private static $kernel;
+    private static $kernel = null;
 
     // Запускает приложение
     public static function initKernel(Config $config) : HttpKernel
     {
-        if (static::$kernel === HttpKernel::class) {
+        if (static::$kernel !== null) {
             throw new ApplicationHasBeenStartedException();
         }
         

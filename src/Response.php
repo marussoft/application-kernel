@@ -15,11 +15,15 @@ class Response extends RawResponse
 
     public function __construct()
     {
-        $this->template = new Template(Config::get('kernel.template', 'path_to_view'));
+        $this->template = new Template;
     }
     
     public function prepare(string $view)
     {
+        if ($this->code !== 200 && $this->template->exists((string) $this->code)) {
+            $this->view = (string) $this->code;
+        }
+    
         if (!empty($this->view)) {
             $this->content($this->template->render($this->view));
         }
@@ -41,5 +45,10 @@ class Response extends RawResponse
     {
         $this->content(json_encode($data, JSON_UNESCAPED_UNICODE));
         $this->header('Content-type: application/json; charset=utf-8');
+    }
+    
+    public function template() : Template
+    {
+        return $this->template;
     }
 }
