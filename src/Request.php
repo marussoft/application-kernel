@@ -14,22 +14,24 @@ class Request extends RawRequest
     
     private $action = '';
     
-    private $valid = true;
+    private $errors = [];
     
-    public function setHandler(string $handler) : void
+    public function setHandler(string $handler) : self
     {
         if (!empty($this->handler)) {
             throw new HandlerAlreadyInitializedException();
         }
         $this->handler = $handler;
+        return $this;
     }
     
-    public function setAction(string $action) : void
+    public function setAction(string $action) : self
     {
         if (!empty($this->action)) {
             throw new ActionAlreadyInitializedException();
         }
         $this->action = $action;
+        return $this;
     }
     
     public function getHandler() : string
@@ -42,13 +44,19 @@ class Request extends RawRequest
         return $this->action;
     }
     
-    public function setValid(bool $valid) : void
+    public function setErrors(array $errors) : self
     {
-        $this->valid = $valid;
+        array_merge($this->errors, $errors);
+        return $this;
     }
     
     public function isValid() : bool
     {
-        return $this->valid;
+        return empty($this->errors);
+    }
+    
+    public function getErrors() : array
+    {
+        return $this->errors;
     }
 }
