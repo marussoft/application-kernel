@@ -46,7 +46,7 @@ class Request extends RawRequest
     
     public function setErrors(array $errors) : self
     {
-        array_merge($this->errors, $errors);
+        $this->errors = array_merge($errors, $this->errors);
         return $this;
     }
     
