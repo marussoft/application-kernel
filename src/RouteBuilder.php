@@ -40,7 +40,7 @@ class RouteBuilder
             $request->setAttributes($result->attributes);
             $request->setHandler($result->handler);
             $request->setAction($result->action);
-            $request->attributes()->set('locale', $result->language);
+            $request->attributes()->set('locale', $result->language ?? Config::get('app.base', 'locale'));
         } else {
             $this->response->code(404);
         }
