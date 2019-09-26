@@ -20,7 +20,7 @@ class Response extends RawResponse
     
     public function prepare(string $view)
     {
-        if ($this->code !== 200 && $this->template->exists((string) $this->code)) {
+        if ($this->code !== self::HTTP_OK && $this->template->exists((string) $this->code)) {
             $this->view = (string) $this->code;
         }
     
