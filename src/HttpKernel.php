@@ -11,18 +11,20 @@ class HttpKernel extends AbstractKernel
     public function handle(Request $request) : Response
     {
         $this->routeBuilder->resolve($request);
-    
+
         if ($this->extensionCollector->extensionsIsExists()) {
             $extensions = $this->extensionCollector->getExtensions();
             foreach($extensions as $extension) {
                 $extension->handle($request);
             }
         }
-    
-        $this->handler->run($request);
+
+        if ($this->response->isOk()) {
+            $this->handler->run($request);
+        }
 
         $this->response->prepare($this->view);
-        
+
         return $this->response;
     }
 }
