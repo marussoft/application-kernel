@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
+use Marussia\Config\Config;
 use Marussia\Request\Request;
 use Marussia\Router\Router;
-use Marussia\ApplicationKernel\Config;
 
 class RouteBuilder
 {
@@ -32,7 +32,7 @@ class RouteBuilder
             $this->request->isSecure() ? 'https' : 'http'
         );
         $this->router->setRoutesDirPath(Config::get('kernel.router', 'routes_dir_path'));
-        $this->router->setLanguages(Config::get('kernel.router', 'languages'));
+        $this->router->setLanguages(Config::get('app.locale', 'languages'));
 
         $result = $this->router->startRouting();
 

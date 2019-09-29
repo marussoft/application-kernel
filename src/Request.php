@@ -11,11 +11,11 @@ use Marussia\ApplicationKernel\Exceptions\ActionAlreadyInitializedException;
 class Request extends RawRequest
 {
     private $handler = '';
-    
+
     private $action = '';
-    
+
     private $errors = [];
-    
+
     public function setHandler(string $handler) : self
     {
         if (!empty($this->handler)) {
@@ -24,7 +24,7 @@ class Request extends RawRequest
         $this->handler = $handler;
         return $this;
     }
-    
+
     public function setAction(string $action) : self
     {
         if (!empty($this->action)) {
@@ -33,28 +33,28 @@ class Request extends RawRequest
         $this->action = $action;
         return $this;
     }
-    
+
     public function getHandler() : string
     {
         return $this->handler;
     }
-    
+
     public function getAction() : string
     {
         return $this->action;
     }
-    
+
     public function setErrors(array $errors) : self
     {
         $this->errors = array_merge($errors, $this->errors);
         return $this;
     }
-    
+
     public function isValid() : bool
     {
         return empty($this->errors);
     }
-    
+
     public function getErrors() : array
     {
         return $this->errors;
