@@ -24,7 +24,8 @@
         "marussia/hook": "^1.0",
         "marussia/template": "~1.0",
         "marussia/json-file-loader": "~1.0",
-        "marussia/config": "~1.0"
+        "marussia/config": "~1.0",
+        "marussia/logger": "~1.0"
     },
     "minimum-stability": "dev",
     "autoload": {

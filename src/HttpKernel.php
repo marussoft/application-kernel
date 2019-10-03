@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
+use Marussia\ApplicationKernel\Exceptions\KernelExtensionException;
+use Marussia\ApplicationKernel\Exceptions\HandlerProcessException;
+
 class HttpKernel extends AbstractKernel
 {
     private $request;
@@ -14,13 +17,25 @@ class HttpKernel extends AbstractKernel
 
         if ($this->extensionCollector->extensionsIsExists()) {
             $extensions = $this->extensionCollector->getExtensions();
-            foreach($extensions as $extension) {
-                $extension->handle($request);
+            foreach($extensions as $extensionName => $extension) {
+                try {
+                    $extension->handle($request);
+                } catch (\Throwable $exception) {
+                    $extensionException = new KernelExtensionException($extensionName, $exception);
+                    $this->log->write($extensionException->getMessage());
+                    throw $extensionException;
+                }
             }
         }
 
         if ($this->response->isOk()) {
-            $this->handler->run($request);
+            try {
+                $this->handler->run($request);
+            } catch (\Throwable $exception) {
+                $handlerException = new HandlerProcessException($request, $exception);
+                $this->log->write($handlerException->getMessage());
+                throw $handlerException;
+            }
         }
 
         $this->response->prepare($this->view);
