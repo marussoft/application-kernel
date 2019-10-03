@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Marussia\ApplicationKernel;
 
 use Marussia\Config\Config;
-use Marussia\DependencyInjection\Container;
 use Marussia\ApplicationKernel\Exceptions\ApplicationHasBeenStartedException;
 use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
