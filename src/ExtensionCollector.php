@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Marussia\ApplicationKernel;
 
 use Marussia\Config\Config;
-use Marussia\DependencyInjection\Container;
 
 class ExtensionCollector extends Container
 {
@@ -14,6 +13,7 @@ class ExtensionCollector extends Container
     public function __construct()
     {
         $this->extensionsBinds = Config::get('kernel.extensions', 'extensions');
+        parent::__construct();
     }
 
     public function getExtensions() : array
