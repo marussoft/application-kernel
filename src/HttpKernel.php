@@ -15,9 +15,14 @@ class HttpKernel extends AbstractKernel
     {
         $this->routeBuilder->resolve($request);
 
+        $this->serviceManager->set($request);
+        
         if ($this->extensionCollector->extensionsIsExists()) {
             $extensions = $this->extensionCollector->getExtensions();
-            foreach($extensions as $extensionName => $extension) {
+            foreach($extensions as $extensionName => $extensionClass) {
+            
+                $extension = $this->serviceManager->instance($extensionClass);
+                
                 try {
                     $extension->handle($request);
                 } catch (\Throwable $exception) {

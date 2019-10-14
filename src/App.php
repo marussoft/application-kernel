@@ -32,22 +32,17 @@ class App
         return static::$kernel;
     }
 
-    public static function view(string $view, array $data = []) : void
+    public function view(string $view, array $data = []) : void
     {
         static::$kernel->view($view, $data);
     }
 
-    public static function hook($hook) : void
+    public function hook($hook) : void
     {
         static::$kernel->addHook($hook);
     }
 
-    public static function response() : Response
-    {
-        return static::$kernel->getResponse();
-    }
-
-    public static function getContainer() : Container
+    public function getContainer() : Container
     {
         return new Container();
     }

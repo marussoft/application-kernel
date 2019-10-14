@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
-use Marussia\Logger\Log;
-
 abstract class AbstractKernel
 {
     protected $extensionCollector;
@@ -21,13 +19,17 @@ abstract class AbstractKernel
     protected $view = '';
 
     protected $hook;
+    
+    protected $serviceManager;
 
     public function __construct(
         ExtensionCollector $extensionCollector,
         RouteBuilder $routeBuilder,
         RequestHandler $handler,
         Response $response,
-        Log $log
+        Logger $log,
+        ServiceManager $serviceManager
+        
     )
     {
         $this->extensionCollector = $extensionCollector;
@@ -35,6 +37,7 @@ abstract class AbstractKernel
         $this->handler = $handler;
         $this->response = $response;
         $this->log = $log;
+        $this->serviceManager = $serviceMamager;
     }
 
     public function view(string $view, array $data = [])
