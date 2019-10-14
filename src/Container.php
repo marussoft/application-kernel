@@ -9,9 +9,9 @@ use Marussia\DependencyInjection\Container as DependencyInjection;
 
 class Container extends DependencyInjection
 {
-    public function __construct()
+    public function __construct(array $providers = [])
     {
-        $this->providers = Config::getAll('app.providers');
+        $this->providers = $providers;
     }
 
 
@@ -22,7 +22,9 @@ class Container extends DependencyInjection
         foreach ($this->dependencies[$class] as $dep) {
 
             if (array_key_exists($dep, $this->providers)) {
-                $params = $this->providers[$dep]::getParams();
+                $provider = $this->instance($this->providers[$dep]);
+                $params = $provider->getParams();
+                var_dump($params);
             }
 
             if (!$this->hasDefinition($dep)) {
@@ -30,7 +32,7 @@ class Container extends DependencyInjection
             }
 
             if (array_key_exists($dep, $this->providers)) {
-                $this->providers[$dep]::prepare($this->getDefinition($dep));
+                $provider->prepare($this->getDefinition($dep));
             }
         }
 
@@ -50,7 +52,8 @@ class Container extends DependencyInjection
         }
 
         if (array_key_exists($class, $this->providers)) {
-            $dependencies = array_merge($dependencies, $this->providers[$dep]::getParams());
+            $provider = $this->instance($this->providers[$class]);
+            $dependencies = array_merge($dependencies, $provider->getParams());
         }
 
         $this->setDefinition($class, $this->reflections[$class]->newInstanceArgs($dependencies));
@@ -78,7 +81,9 @@ class Container extends DependencyInjection
             } else {
 
                 if (array_key_exists($dep, $this->providers)) {
-                    $params = $this->providers[$dep]::getParams();
+                    $provider = $this->instance($this->providers[$dep]);
+                    $params = $provider->getParams();
+                    var_dump($params);
                 }
 
                 // Получаем конструктор

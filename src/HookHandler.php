@@ -11,10 +11,10 @@ class HookHandler
 {
     private $hookHandler;
 
-    public function __construct(Hook $hook)
+    public function __construct(Config $config, Hook $hook)
     {
         $this->hookHandler = $hook;
-        $this->hookHandler->setHandlers(Config::get('hooks.handlers', 'handlers'));
+        $this->hookHandler->setHandlers($config->get('hooks.handlers', 'handlers'));
     }
 
     public function add($hook)

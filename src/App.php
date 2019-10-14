@@ -13,17 +13,18 @@ class App
     private static $kernel = null;
 
     // Запускает приложение
-    public static function initKernel() : HttpKernel
+    public static function initKernel(Config $config) : HttpKernel
     {
         if (static::$kernel !== null) {
             throw new ApplicationHasBeenStartedException();
         }
 
         $container = new Container();
-
-        if (!Config::isReady()) {
-            throw new KernelConfigIsNotInitializedException();
-        }
+        $container->set($config);
+        
+        $providers = $config->getAll('app.providers');
+        
+        $container->instance(ServiceManager::class, $providers)
 
         static::$kernel = $container->instance(HttpKernel::class);
 

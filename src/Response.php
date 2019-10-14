@@ -13,9 +13,9 @@ class Response extends RawResponse
 
     private $view;
 
-    public function __construct()
+    public function __construct(Template $template)
     {
-        $this->template = new Template;
+        $this->template = $template;
     }
 
     public function prepare(string $view)
