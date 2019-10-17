@@ -8,8 +8,6 @@ use Marussia\Config\Config;
 
 abstract class AbstractKernel
 {
-    protected $extensionCollector;
-
     protected $routeBuilder;
 
     protected $response;
