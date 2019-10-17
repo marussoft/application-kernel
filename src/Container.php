@@ -9,29 +9,44 @@ use Marussia\DependencyInjection\Container as DependencyInjection;
 
 class Container extends DependencyInjection
 {
-    public function __construct()
+    public function __construct(array $providers = [])
     {
-        $this->providers = Config::getAll('app.providers');
+        $this->providers = $providers;
     }
-
 
     protected function instanceSingleClass(string $class) : void
     {
         $params = [];
 
+        if ($this->hasDefinition($class)) {
+            return;
+        }
+
         foreach ($this->dependencies[$class] as $dep) {
 
+            if ($this->hasDefinition($dep)) {
+                continue;
+            }
+        
             if (array_key_exists($dep, $this->providers)) {
-                $params = $this->providers[$dep]::getParams();
+                $container = clone($this);
+                $provider = $container->instance($this->providers[$dep]);
+                $params = $provider->getParams();
+                
+                $constructor = $this->reflections[$dep]->getConstructor();
+                
+                if ($constructor !== null) {
+                    $this->setDefinition($dep, $this->reflections[$dep]->newInstanceArgs($params));
+                } else {
+                    $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
+                }
+
+                $provider->prepare($this->getDefinition($dep));
+                    
+            } else {
+                $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
             }
 
-            if (!$this->hasDefinition($dep)) {
-                $this->setDefinition($dep, $this->reflections[$dep]->newInstanceArgs($params));
-            }
-
-            if (array_key_exists($dep, $this->providers)) {
-                $this->providers[$dep]::prepare($this->getDefinition($dep));
-            }
         }
 
         $this->instanceClass($class, $this->dependencies[$class]);
@@ -50,7 +65,9 @@ class Container extends DependencyInjection
         }
 
         if (array_key_exists($class, $this->providers)) {
-            $dependencies = array_merge($dependencies, $this->providers[$dep]::getParams());
+            $container = clone($this);
+            $provider = $container->instance($this->providers[$class]);
+            $dependencies = array_merge($dependencies, $provider->getParams());
         }
 
         $this->setDefinition($class, $this->reflections[$class]->newInstanceArgs($dependencies));
@@ -59,36 +76,57 @@ class Container extends DependencyInjection
     // Рекурсивно инстанцирует зависимости
     protected function instanceRecursive(string $class, array $deps = []) : void
     {
+
         $dependencies = [];
 
         $params = [];
 
         foreach ($deps as $dep) {
 
+            if ($this->hasDefinition($dep)) {
+                $dependencies[] = $this->getDefinition($dep);
+                continue;
+            } 
+    
             if (isset($this->dependencies[$dep])) {
 
                 if ($this->hasDefinition($dep)) {
                     $dependencies[] = $this->getDefinition($dep);
+
                 } elseif ($this->getDefinition($dep) !== null) {
+
                     $this->instanceRecursive($dep, $this->getDefinition($dep));
+
                 } else {
                     $this->instanceSingleClass($dep);
                 }
 
             } else {
 
-                if (array_key_exists($dep, $this->providers)) {
-                    $params = $this->providers[$dep]::getParams();
+                if ($this->hasDefinition($dep)) {
+                    $dependencies[] = $this->getDefinition($dep);
+                    continue;
                 }
 
-                // Получаем конструктор
-                $constructor = $this->reflections[$dep]->getConstructor();
+                if (array_key_exists($dep, $this->providers)) {
+                    $container = clone($this);
+                    $provider = $container->instance($this->providers[$dep]);
+                    $params = $provider->getParams();
+                    
+                    $constructor = $this->reflections[$dep]->getConstructor();
 
-                if ($constructor !== null) {
-                    $this->setDefinition($dep, $this->reflections[$dep]->newInstanceArgs($params));
+                    if ($constructor !== null) {
+                        $this->setDefinition($dep, $this->reflections[$dep]->newInstanceArgs($params));
+                    } else {
+                        $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
+                    }
+                    
+                    $provider->prepare($this->getDefinition($dep));
+                    
                 } else {
                     $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
                 }
+
             }
 
             if (!in_array($this->getDefinition($dep), $dependencies, true)) {

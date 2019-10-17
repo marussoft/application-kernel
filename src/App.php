@@ -10,44 +10,52 @@ use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
 
 class App
 {
-    private static $kernel = null;
+    private $kernel = null;
 
-    // Запускает приложение
-    public static function initKernel() : HttpKernel
+    private static $started = false;
+
+    public function __construct(HttpKernel $kernel)
     {
-        if (static::$kernel !== null) {
+        $this->kernel = $kernel;
+    }
+    
+    // Запускает приложение
+    public static function initKernel(Config $config) : HttpKernel
+    {
+        if (static::$started) {
             throw new ApplicationHasBeenStartedException();
         }
 
-        $container = new Container();
+        $providers = $config->getAll('app.providers');
 
-        if (!Config::isReady()) {
-            throw new KernelConfigIsNotInitializedException();
-        }
+        $container = new Container($providers);
+        $container->set($config);
 
-        static::$kernel = $container->instance(HttpKernel::class);
+        $serviceManager = $container->instance(ServiceManager::class, [$providers]);
+        
+        $kernel = $container->instance(HttpKernel::class);
+        
+        $app = new static($kernel);
+        
+        $serviceManager->set($app);
+        
+        static::$started = true;
 
-        // Возвращаем ядро
-        return static::$kernel;
+        return $kernel;
     }
 
-    public static function view(string $view, array $data = []) : void
+    public function view(string $view, array $data = []) : void
     {
-        static::$kernel->view($view, $data);
+        $this->kernel->view($view, $data);
     }
 
-    public static function hook($hook) : void
+    public function hook($hook) : void
     {
-        static::$kernel->addHook($hook);
+        $this->kernel->addHook($hook);
     }
 
-    public static function response() : Response
+    public function instance(string $className, array $params = [], bool $singleton = true)
     {
-        return static::$kernel->getResponse();
-    }
-
-    public static function getContainer() : Container
-    {
-        return new Container();
+        return $this->kernel->instance($className, $params, $singleton);
     }
 }

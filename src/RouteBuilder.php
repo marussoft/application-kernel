@@ -16,9 +16,12 @@ class RouteBuilder
 
     private $response;
 
-    public function __construct(Response $response)
+    private $config;
+
+    public function __construct(Config $config, Response $response)
     {
         $this->response = $response;
+        $this->config = $config;
     }
 
     public function resolve(Request $request) : void
@@ -31,8 +34,8 @@ class RouteBuilder
             $this->request->server->get('HTTP_HOST'),
             $this->request->isSecure() ? 'https' : 'http'
         );
-        $this->router->setRoutesDirPath(Config::get('kernel.router', 'routes_dir_path'));
-        $this->router->setLanguages(Config::get('app.locale', 'languages'));
+        $this->router->setRoutesDirPath($this->config->get('kernel.router', 'routes_dir_path'));
+        $this->router->setLanguages($this->config->get('app.locale', 'languages'));
 
         $result = $this->router->startRouting();
 
@@ -42,7 +45,7 @@ class RouteBuilder
             $request->setAction($result->action);
             $request->attributes()->set('locale', $result->language);
         } else {
-            $this->response->code(404);
+            $this->response->code(Response::HTTP_NOT_FOUND);
         }
     }
 }
