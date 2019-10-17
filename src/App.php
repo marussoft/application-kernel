@@ -12,7 +12,7 @@ class App
 {
     private $kernel = null;
 
-    private static $inited = false;
+    private static $started = false;
 
     public function __construct(HttpKernel $kernel)
     {
@@ -22,7 +22,7 @@ class App
     // Запускает приложение
     public static function initKernel(Config $config) : HttpKernel
     {
-        if (static::$inited) {
+        if (static::$started) {
             throw new ApplicationHasBeenStartedException();
         }
 
@@ -39,7 +39,7 @@ class App
         
         $serviceManager->set($app);
         
-        static::$inited = true;
+        static::$started = true;
 
         return $kernel;
     }
