@@ -4,59 +4,64 @@ declare(strict_types=1);
 
 namespace Marussia\ApplicationKernel;
 
-use Marussia\Logger\Log;
+use Marussia\Config\Config;
 
 abstract class AbstractKernel
 {
     protected $extensionCollector;
-    
+
     protected $routeBuilder;
-    
+
     protected $response;
-    
-    protected $handler;
-    
-    protected $template;
-    
-    protected $view = '';
-    
+
+    protected $log;
+
     protected $hook;
-    
+
+    protected $serviceManager;
+
+    protected $config;
+
     public function __construct(
-        ExtensionCollector $extensionCollector, 
-        RouteBuilder $routeBuilder, 
-        RequestHandler $handler, 
-        Response $response,
+        ServiceManager $serviceManager,
         HookHandler $hook,
-        Log $log
+        Config $config,
+        RouteBuilder $routeBuilder,
+        Response $response,
+        Logger $log
     )
     {
-        $this->extensionCollector = $extensionCollector;
         $this->routeBuilder = $routeBuilder;
-        $this->handler = $handler;
         $this->response = $response;
-        $this->hook = $hook;
         $this->log = $log;
+        $this->hook = $hook;
+        $this->config = $config;
+        $this->serviceManager = $serviceManager;
+        $this->serviceManager->set($response);
+        $this->serviceManager->set($log);
+        $this->serviceManager->set($hook);
+        $this->serviceManager->set($config);
     }
-    
+
     public function view(string $view, array $data = [])
     {
         $this->response->setContent($data);
         $this->response->setView($view);
     }
-    
+
     public function addHook($hook) : void
     {
         $this->hook->add($hook);
     }
-    
+
     public function terminate()
     {
         $this->hook->run();
     }
     
-    public function getResponse() : Response
+    public function instance(string $className, array $params = [], bool $singleton = true)
     {
-        return $this->response;
+        return $this->serviceManager->instance($className, $params, $singleton);
     }
+
 }

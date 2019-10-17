@@ -6,23 +6,18 @@ namespace Marussia\ApplicationKernel;
 
 use Marussia\Config\Config;
 
-class ExtensionCollector extends Container
+class ExtensionCollector
 {
     private $extensionsBinds = [];
 
-    public function __construct()
+    public function __construct(Config $config)
     {
-        $this->extensionsBinds = Config::get('kernel.extensions', 'extensions');
-        parent::__construct();
+        $this->extensionsBinds = $config->get('kernel.extensions', 'extensions');
     }
 
     public function getExtensions() : array
     {
-        $extensions = [];
-        foreach($this->extensionsBinds as $extensionName => $className) {
-            $extensions[$extensionName] = $this->instance($className);
-        }
-        return $extensions;
+        return $this->extensionsBinds;
     }
 
     public function extensionsIsExists() : bool
