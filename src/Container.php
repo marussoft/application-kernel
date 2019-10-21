@@ -41,7 +41,9 @@ class Container extends DependencyInjection
                     $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
                 }
 
-                $provider->prepare($this->getDefinition($dep));
+                if ($this->hasDefinition($dep)) {
+                    $provider->prepare($this->getDefinition($dep));
+                }
                     
             } else {
                 $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
@@ -57,7 +59,9 @@ class Container extends DependencyInjection
         $dependencies = [];
 
         foreach ($deps as $dep) {
-            $dependencies[] = $this->getDefinition($dep);
+            if ($this->hasDefinition($dep)) {
+                $dependencies[] = $this->getDefinition($dep);
+            }
         }
 
         if (!empty($this->params)) {
@@ -92,10 +96,11 @@ class Container extends DependencyInjection
 
                 if ($this->hasDefinition($dep)) {
                     $dependencies[] = $this->getDefinition($dep);
-
                 } elseif ($this->getDefinition($dep) !== null) {
 
-                    $this->instanceRecursive($dep, $this->getDefinition($dep));
+                    if ($this->hasDefinition($dep)) {
+                        $this->instanceRecursive($dep, $this->getDefinition($dep));
+                    }
 
                 } else {
                     $this->instanceSingleClass($dep);
@@ -121,7 +126,9 @@ class Container extends DependencyInjection
                         $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
                     }
                     
-                    $provider->prepare($this->getDefinition($dep));
+                    if ($this->hasDefinition($dep)) {
+                        $provider->prepare($this->getDefinition($dep));
+                    }
                     
                 } else {
                     $this->setDefinition($dep, $this->reflections[$dep]->newInstance());
@@ -130,10 +137,23 @@ class Container extends DependencyInjection
             }
 
             if (!in_array($this->getDefinition($dep), $dependencies, true)) {
-                $dependencies[] = $this->getDefinition($dep);
+                if ($this->hasDefinition($dep)) {
+                    $dependencies[] = $this->getDefinition($dep);
+                }
             }
         }
 
         $this->setDefinition($class, $this->reflections[$class]->newInstanceArgs($dependencies));
+    }
+    
+    protected function getDefinition(string $className)
+    {
+        if ($this->singleton && $this->hasDefinition($className)) {
+            return $this->definitions[$className];
+        }
+        
+        if ($this->hasDefinition($className)) {
+            return $this->tmp[$className];
+        }
     }
 }
