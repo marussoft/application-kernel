@@ -42,8 +42,11 @@ class HttpKernel extends AbstractKernel
                 $extension->handle($request);
             } catch (\Throwable $exception) {
                 $extensionException = new KernelExtensionException($extensionName, $exception);
-                $this->log->write($extensionException->getMessage());
-                throw $exception;
+                $this->log->write($exception->getMessage());
+                if ($this->config->env('app_debug') === true) {
+                    throw $exception;
+                }
+                $this->response->code(Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
     }
@@ -62,7 +65,10 @@ class HttpKernel extends AbstractKernel
             } catch (\Throwable $exception) {
                 $handlerException = new HandlerProcessException($request, $exception);
                 $this->log->write($handlerException->getMessage());
-                throw $exception;
+                if ($this->config->env('app_debug') === true) {
+                    throw $exception;
+                }
+                $this->response->code(Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
     }
