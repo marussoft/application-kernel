@@ -7,6 +7,7 @@ namespace Marussia\ApplicationKernel;
 use Marussia\Config\Config;
 use Marussia\ApplicationKernel\Exceptions\ApplicationHasBeenStartedException;
 use Marussia\ApplicationKernel\Exceptions\KernelConfigIsNotInitializedException;
+use Marussia\DependencyInjection\Container;
 
 class App
 {
@@ -28,7 +29,7 @@ class App
 
         $providers = $config->getAll('app.providers');
 
-        $container = new Container($providers);
+        $container = Container::create($providers);
         $container->set($config);
 
         $serviceManager = $container->instance(ServiceManager::class, [$providers]);
