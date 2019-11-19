@@ -36,6 +36,7 @@ class RouteBuilder
         );
         $this->router->setRoutesDirPath($this->config->get('kernel.router', 'routes_dir_path'));
         $this->router->setLanguages($this->config->get('app.locale', 'languages'));
+        $this->router->setRoutesAliases($this->config->get('kernel.router', 'aliases'));
 
         $result = $this->router->startRouting();
 
