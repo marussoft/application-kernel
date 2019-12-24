@@ -17,6 +17,8 @@ class Response extends RawResponse
 
     const SESSION_MESSAGES_KEY = 'messages';
     
+    const SESSION_DATA_KEY = 'data';
+    
     public function __construct(Template $template, Session $session)
     {
         $this->template = $template;
@@ -80,5 +82,18 @@ class Response extends RawResponse
         $this->session->set(self::SESSION_MESSAGES_KEY, $newMessages);
         return $this;
     }
-
+    
+    public function data(array $dataSet) : self
+    {
+        $data = [];
+        
+        if ($this->session->has(self::SESSION_DATA_KEY)) {
+            $dataSet = $this->session->get(self::SESSION_DATA_KEY);
+        }
+        
+        $dataSet = array_merge_recursive($dataSet, $data);
+        
+        $this->session->set(self::SESSION_DATA_KEY, $dataSet);
+        return $this;
+    }
 }
